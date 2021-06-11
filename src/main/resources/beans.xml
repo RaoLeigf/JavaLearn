@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="personBean" class="com.rl.spring5.beans.PersonBean" />
+
+    <bean id="dogBean" class="com.rl.spring5.beans.DogBean">
+        <property name="age" value="12" />
+        <property name="name" >
+                <null/>
+        </property>
+    </bean>
+
+    <bean id="ydxBean" class="com.rl.spring5.beans.YdxBean">
+        <constructor-arg name="name" value="殷东旭"/>
+        <!--<constructor-arg name="address" value="<<asdasd>>"/>  报错，下面为正确写法-->
+        <!--<constructor-arg name="address" value="&lt;&gt;asdasd&gt;&lt;"/>  或者使用下面写法-->
+        <constructor-arg name="address" >
+            <value>
+                <!-- CDATA 可以包含特殊符号 -->
+                <![CDATA[<<asdasd>>]]>
+            </value>
+        </constructor-arg>
+    </bean>
+</beans>

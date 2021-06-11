@@ -26,3 +26,5 @@ hs_err_pid*
 
 .gitignore
 src/com/leetcode/
+/.idea
+/target
