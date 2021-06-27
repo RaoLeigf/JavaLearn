@@ -2,10 +2,16 @@ package com.rl.spring5;
 
 import com.alibaba.fastjson.JSON;
 import com.rl.spring5.beans.*;
+import javafx.util.converter.DateStringConverter;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import java.math.BigDecimal;
+import java.sql.Array;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -160,11 +166,11 @@ public class TestSpring {
         dogs.add(new TreeBean("501",5));
         dogs.add(new TreeBean("502",5));
         dogs.add(new TreeBean("50101",5));
-
-        List<TreeBean> dogs2 = dogs.stream().sorted(Comparator.comparing(TreeBean::getName)).collect(Collectors.toList());
-
-        List<TreeBean> incomeList = GetChildren(dogs2,"5");
-
+        dogs.sort((TreeBean t1,TreeBean t2)-> t1.getName().compareTo(t2.getName()));
+        List<TreeBean> incomeList = GetChildren(dogs,"4");
+        List<TreeBean> outcomeList = GetChildren(dogs,"4");
+        System.out.println(JSON.toJSONString(incomeList));
+        System.out.println(JSON.toJSONString(outcomeList));
     }
 
     private List<TreeBean> GetChildren(List<TreeBean> allData, String parentCode){
@@ -249,9 +255,113 @@ public class TestSpring {
         System.out.println("平均数 : " + stats.getAverage());
     }
 
-    @Test()
+    @Test
     public void TestDemo(){
+
+        List<DogBean> dogs = Arrays.asList(
+                new DogBean("aaqweaqw",1),
+                new DogBean("derewq",2),
+                new DogBean("bwq",3),
+                new DogBean("crwwe",4),
+                new DogBean("derewq",2)
+        );
+
+       dogs.sort(Comparator.comparing(x->x.getName().length()));
+
+        System.out.println(JSON.toJSONString(dogs.size()));
+    }
+
+    @Test
+    public void TestFindFirst(){
+        List<DogBean> dogs = Arrays.asList(
+                new DogBean("a",1),
+                new DogBean("d",2),
+                new DogBean("b",3),
+                new DogBean("c",4)
+        );
+
+        List<DogBean> dogs2 = dogs.stream().filter(p -> p.getName().equals("f")).collect(Collectors.toList());
+
+        if(!dogs2.isEmpty()){
+            DogBean dog = dogs2.get(0);
+            System.out.println(JSON.toJSONString(dog));
+        }
 
     }
 
+    @Test
+    public void TestBigDecimal(){
+        BigDecimal b1 = new BigDecimal("987654321.12345678");
+        BigDecimal b2 = BigDecimal.valueOf(123456789.98765432);
+        System.out.println(b1.multiply(b2));
+    }
+
+    @Test
+    public void TestInteger(){
+        DemoBean demo = new DemoBean();
+        System.out.println(demo.i);//int 的默认值会是0
+        System.out.println(demo.i2);//Integer 的默认值会是null
+    }
+
+    @Test
+    public void TestSetSet(){
+        DogBean dog = new DogBean();
+
+        dog.setName("aa");
+    }
+
+    @Test
+    public void TestString(){
+        StringBuilder builder = new StringBuilder();
+        List<Character> characters = Arrays.asList('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j');
+        int i = 0;
+        for(; i < 10;i++){
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    for(int j = 0; j < 10 ; j++){
+                        System.out.println(Thread.currentThread().getName()
+                                + "****"
+                                + j
+                                + characters.get(j).toString());
+                    }
+                }
+            }).start();
+        }
+    }
+
+    @Test
+    public void TestHashMap(){
+        Map<Integer, String> map = new HashMap<>();
+        map.put(1, "a");
+        System.out.println(map.get("a"));
+        System.out.println(map.get(1));
+    }
+
+    @Test
+    public void TestDateTime(){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Calendar calendar = Calendar.getInstance();
+
+        calendar.set(2021, Calendar.JUNE,24);
+        System.out.println(simpleDateFormat.format(calendar.getTime()));
+
+        calendar.set(Calendar.DATE,19);
+        System.out.println(simpleDateFormat.format(calendar.getTime()));
+
+        calendar.set(Calendar.YEAR,2014);
+        System.out.println(simpleDateFormat.format(calendar.getTime()));
+
+        calendar.set(Calendar.MONTH,Calendar.DECEMBER);
+        System.out.println(simpleDateFormat.format(calendar.getTime()));
+    }
+
+    @Test
+    public void TestMain(){
+        int a = 3,b = 4;
+        System.out.println((a+b)/2);
+        BigDecimal b1 = new BigDecimal("1.2");
+        BigDecimal b2 = new BigDecimal("9.7");
+        System.out.println(b1.add(b2));
+    }
 }
